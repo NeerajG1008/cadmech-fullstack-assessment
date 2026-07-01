@@ -18,6 +18,7 @@
  *   DELETE /api/equipment/:id  — Delete equipment
  *   GET    /api/stats          — Dashboard statistics
  */
+const { connectDB } = require("./config/db");
 
 const express = require('express');
 const cors = require('cors');
@@ -67,6 +68,10 @@ app.use((err, req, res, next) => {
     message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong',
   });
 });
+
+// database conenction 
+
+connectDB();
 
 // ─── Start Server ──────────────────────────────────────────
 app.listen(PORT, () => {

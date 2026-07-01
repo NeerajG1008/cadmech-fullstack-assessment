@@ -15,7 +15,7 @@
 -- ────────────────────────────────────────────────
 -- OPTION 1: SQLite
 -- ────────────────────────────────────────────────
-
+/*
 CREATE TABLE IF NOT EXISTS equipment (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -53,13 +53,13 @@ INSERT INTO equipment (name, type, status, location, serial_number, description,
     ('Motor Control Panel', 'Electrical Panel', 'Under Maintenance', 'Lab 4 - Building A', 'ELP-2023-0021', 'AC/DC motor control and protection panel for electrical labs', '2023-11-22'),
     ('Automation Line Simulator', 'Automation Trainer', 'Active', 'Lab 6 - Building B', 'AUT-2024-0056', 'Miniature production line simulator with conveyor and sorting', '2024-06-15'),
     ('Electrical Wiring Trainer', 'Electrical Panel', 'Active', 'Lab 4 - Building A', 'ELP-2024-0035', 'Industrial wiring and protection device training panel', '2024-07-01');
-
+*/
 
 -- ────────────────────────────────────────────────
 -- OPTION 2: MySQL
 -- ────────────────────────────────────────────────
 
-/*
+
 CREATE DATABASE IF NOT EXISTS cadmech_equipment;
 USE cadmech_equipment;
 
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS equipment (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-*/
+
 
 
 -- ────────────────────────────────────────────────
