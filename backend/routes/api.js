@@ -12,6 +12,7 @@
  *
  * Refer to README.md for request/response examples.
  */
+const equipmentController = require("../controllers/equipmentController");
 
 const express = require('express');
 const router = express.Router();
@@ -19,43 +20,49 @@ const router = express.Router();
 // ─── GET /api/equipment ────────────────────────────────────
 // List all equipment
 // Optional query params: ?search=keyword&type=CNC Machine&status=Active
-router.get('/equipment', async (req, res) => {
-  try {
-    // TODO: Implement — fetch all equipment from database
-    // Support search, type filter, and status filter via query params
+// router.get('/equipment', async (req, res) => {
+//   try {
+//     // TODO: Implement — fetch all equipment from database
+//     // Support search, type filter, and status filter via query params
 
-    // Example placeholder response (remove this and add your implementation):
-    res.json({
-      message: 'TODO: Implement GET /api/equipment',
-      query: req.query,
-      data: [],
-    });
-  } catch (error) {
-    console.error('Error fetching equipment:', error);
-    res.status(500).json({ error: 'Failed to fetch equipment' });
-  }
-});
+//     // Example placeholder response (remove this and add your implementation):
+//     res.json({
+//       message: 'TODO: Implement GET /api/equipment',
+//       query: req.query,
+//       data: [],
+//     });
+//   } catch (error) {
+//     console.error('Error fetching equipment:', error);
+//     res.status(500).json({ error: 'Failed to fetch equipment' });
+//   }
+// });
+
+router.get("/equipment", equipmentController.getAllEquipment);
+
 
 // ─── GET /api/equipment/:id ────────────────────────────────
 // Get a single equipment item by ID
-router.get('/equipment/:id', async (req, res) => {
-  try {
-    // TODO: Implement — fetch single equipment by req.params.id
+// router.get('/equipment/:id', async (req, res) => {
+//   try {
+//     // TODO: Implement — fetch single equipment by req.params.id
 
-    res.json({
-      message: 'TODO: Implement GET /api/equipment/:id',
-      id: req.params.id,
-    });
-  } catch (error) {
-    console.error('Error fetching equipment:', error);
-    res.status(500).json({ error: 'Failed to fetch equipment' });
-  }
-});
+//     res.json({
+//       message: 'TODO: Implement GET /api/equipment/:id',
+//       id: req.params.id,
+//     });
+//   } catch (error) {
+//     console.error('Error fetching equipment:', error);
+//     res.status(500).json({ error: 'Failed to fetch equipment' });
+//   }
+// });
+
+router.get( "/equipment/:id", equipmentController.getEquipmentById);
 
 // ─── POST /api/equipment ───────────────────────────────────
 // Create new equipment
-// Required fields: name, type, status
+// Required fields: name, type, status  
 // Optional fields: location, serial_number, description, installed_date
+/*
 router.post('/equipment', async (req, res) => {
   try {
     const { name, type, status, location, serial_number, description, installed_date } = req.body;
@@ -79,7 +86,11 @@ router.post('/equipment', async (req, res) => {
     res.status(500).json({ error: 'Failed to create equipment' });
   }
 });
+*/
 
+router.post("/equipment",equipmentController.createEquipment);
+
+/*
 // ─── PUT /api/equipment/:id ────────────────────────────────
 // Update an existing equipment item
 router.put('/equipment/:id', async (req, res) => {
@@ -96,9 +107,13 @@ router.put('/equipment/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update equipment' });
   }
 });
+*/
+router.put("/equipment/:id",equipmentController.updateEquipment);
 
 // ─── DELETE /api/equipment/:id ─────────────────────────────
 // Delete an equipment item
+
+/*
 router.delete('/equipment/:id', async (req, res) => {
   try {
     // TODO: Implement — delete equipment by req.params.id
@@ -112,10 +127,14 @@ router.delete('/equipment/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to delete equipment' });
   }
 });
+*/
+
+router.delete("/equipment/:id",equipmentController.deleteEquipment);
 
 // ─── GET /api/stats ────────────────────────────────────────
 // Get dashboard statistics
 // Should return: total count, active count, maintenance count, decommissioned count
+/*
 router.get('/stats', async (req, res) => {
   try {
     // TODO: Implement — query database for counts by status
@@ -134,5 +153,9 @@ router.get('/stats', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch statistics' });
   }
 });
+*/
+
+router.get("/stats",equipmentController.getDashboardStats);
+
 
 module.exports = router;
