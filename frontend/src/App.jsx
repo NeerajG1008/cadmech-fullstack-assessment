@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import './App.css'
+import Dashboard from "./pages/Dashboard";
+import { Toaster } from 'react-hot-toast';
 
 /**
  * SmartLab Equipment Manager — CADMech Assessment
@@ -26,72 +28,39 @@ import './App.css'
  */
 
 // TODO: Update this to your deployed backend URL before deploying frontend
-const API_BASE = '/api'
 
 function App() {
   return (
-    <div className="app">
-      <header className="app-header">
-        <div className="header-content">
-          <h1>🏭 SmartLab Equipment Manager</h1>
-          <p className="subtitle">Cadmech Engineering Pvt. Ltd.</p>
-        </div>
-      </header>
-
-      <main className="app-main">
-        <section className="welcome-section">
-          <div className="welcome-card">
-            <h2>👋 Welcome, Developer!</h2>
-            <p>
-              This is your starting point. Replace this content with your
-              SmartLab Equipment Manager implementation.
-            </p>
-
-            <div className="checklist">
-              <h3>📋 Feature Checklist</h3>
-              <ul>
-                <li>⬜ Dashboard with summary stats</li>
-                <li>⬜ Equipment list view</li>
-                <li>⬜ Add new equipment</li>
-                <li>⬜ Edit equipment</li>
-                <li>⬜ Delete equipment</li>
-                <li>⬜ Search &amp; Filter</li>
-                <li>⬜ Responsive design</li>
-              </ul>
-            </div>
-
-            <div className="api-status">
-              <h3>🔌 Backend API Status</h3>
-              <p>
-                Make sure your backend is running at{' '}
-                <code>http://localhost:5000</code>
-              </p>
-              <button
-                className="check-btn"
-                onClick={async () => {
-                  try {
-                    const res = await fetch(`${API_BASE}/health`)
-                    const data = await res.json()
-                    alert(`✅ Backend is running! Status: ${data.status}`)
-                  } catch (err) {
-                    alert('❌ Backend is not reachable. Make sure it is running on port 5000.')
-                  }
-                }}
-              >
-                Check Backend Connection
-              </button>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer className="app-footer">
-        <p>
-          CADMech Full Stack Assessment &copy; {new Date().getFullYear()} —
-          Cadmech Engineering Pvt. Ltd.
-        </p>
-      </footer>
-    </div>
+    <>
+      <Dashboard />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#fff',
+            color: '#0f172a',
+            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            fontSize: '14px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
+    </>
   )
 }
 

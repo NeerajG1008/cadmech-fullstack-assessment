@@ -3,6 +3,10 @@
    CADMech Assessment
    =================================== */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset */
 *,
 *::before,
@@ -90,4 +94,18 @@ a:hover {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+/* Skeleton Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
 }
