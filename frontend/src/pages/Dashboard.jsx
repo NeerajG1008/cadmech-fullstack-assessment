@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Package } from "lucide-react";
+import toast from 'react-hot-toast';
 
 import equipmentApi from "../api/equipmentApi";
 
@@ -93,6 +94,8 @@ function Dashboard() {
     try {
       await equipmentApi.deleteEquipment(selectedEquipment.id);
 
+      toast.success('Equipment deleted successfully!');
+
       await fetchEquipment();
 
       setIsDeleteOpen(false);
@@ -100,6 +103,7 @@ function Dashboard() {
       setSelectedEquipment(null);
     } catch (error) {
       console.error("Delete failed:", error);
+      toast.error('Failed to delete equipment. Please try again.');
     }
   };
 
@@ -109,9 +113,11 @@ function Dashboard() {
       if (selectedEquipment) {
         // Update existing equipment
         await equipmentApi.updateEquipment(selectedEquipment.id, formData);
+        toast.success('Equipment updated successfully!');
       } else {
         // Create new equipment
         await equipmentApi.createEquipment(formData);
+        toast.success('Equipment added successfully!');
       }
 
       // Refresh the equipment list
@@ -122,7 +128,7 @@ function Dashboard() {
       setSelectedEquipment(null);
     } catch (error) {
       console.error("Save failed:", error);
-      alert("Failed to save equipment. Please try again.");
+      toast.error('Failed to save equipment. Please try again.');
     }
   };
 

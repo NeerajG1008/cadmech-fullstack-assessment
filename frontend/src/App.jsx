@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import Dashboard from "./pages/Dashboard";
+import { Toaster } from 'react-hot-toast';
 
 /**
  * SmartLab Equipment Manager — CADMech Assessment
@@ -30,7 +31,36 @@ import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
-    <Dashboard />
+    <>
+      <Dashboard />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#fff',
+            color: '#0f172a',
+            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
+            padding: '12px 16px',
+            fontSize: '14px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+          },
+          success: {
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
+    </>
   )
 }
 

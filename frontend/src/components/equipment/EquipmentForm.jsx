@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { Package, MapPin, Calendar, Hash, Save, Loader2 } from "lucide-react";
+import { Package, MapPin, Calendar, Hash, Save, Loader2, AlertCircle } from "lucide-react";
 import { EQUIPMENT_STATUS, EQUIPMENT_TYPES } from "../../utils/constants";
+import toast from 'react-hot-toast';
 
 function EquipmentForm({ equipment, onSubmit, onClose }) {
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -37,6 +39,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
         installed_date: "",
       });
     }
+    setErrors({});
   }, [equipment]);
 
   const handleChange = (e) => {
@@ -45,10 +48,48 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
       ...prev,
       [name]: value,
     }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Name validation
+    if (!formData.name || formData.name.trim() === "") {
+      newErrors.name = "Equipment name is required";
+    } else if (formData.name.trim().length < 3) {
+      newErrors.name = "Equipment name must be at least 3 characters";
+    }
+
+    // Type validation
+    if (!formData.type || formData.type === "") {
+      newErrors.type = "Equipment type is required";
+    }
+
+    // Status validation
+    if (!formData.status || formData.status === "") {
+      newErrors.status = "Status is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate form
+    if (!validateForm()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
     try {
       setSaving(true);
       await onSubmit(formData);
@@ -57,9 +98,17 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
     }
   };
 
-  const inputClass = "w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-200 focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100/50 hover:border-slate-300";
+  const inputClass = "w-full rounded-xl border bg-slate-50 px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-200 focus:bg-white focus:ring-4";
 
-  const inputWithIconClass = "w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-200 focus:border-blue-400 focus:bg-white focus:ring-4 focus:ring-blue-100/50 hover:border-slate-300";
+  const inputWithIconClass = "w-full rounded-xl border bg-slate-50 pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all duration-200 focus:bg-white focus:ring-4";
+
+  const getInputClasses = (fieldName, hasIcon = false) => {
+    const baseClass = hasIcon ? inputWithIconClass : inputClass;
+    if (errors[fieldName]) {
+      return `${baseClass} border-red-300 focus:border-red-400 focus:ring-red-100/50`;
+    }
+    return `${baseClass} border-slate-200 focus:border-blue-400 focus:ring-blue-100/50 hover:border-slate-300`;
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -90,9 +139,14 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
                 placeholder="e.g., CNC Lathe V2"
                 value={formData.name}
                 onChange={handleChange}
-                className={inputWithIconClass}
-                required
+                className={getInputClasses('name', true)}
               />
+              {errors.name && (
+                <div className="flex items-center gap-1.5 mt-1.5 text-xs text-red-600">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{errors.name}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -111,8 +165,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className={inputWithIconClass}
-                required
+                className={getInputClasses('type', true)}
               >
                 <option value="">Select Equipment Type</option>
                 {EQUIPMENT_TYPES.map((type) => (
@@ -121,6 +174,12 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
                   </option>
                 ))}
               </select>
+              {errors.type && (
+                <div className="flex items-center gap-1.5 mt-1.5 text-xs text-red-600">
+                  <AlertCircle className="w-3.5 h-3.5" />
+                  <span>{errors.type}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -140,13 +199,16 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
               Status
+              <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-50 text-red-700 border border-red-100">
+                Required
+              </span>
             </label>
             <p className="text-xs text-slate-500 mb-2">Current operational status</p>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className={inputClass}
+              className={getInputClasses('status', false)}
             >
               {EQUIPMENT_STATUS.map((status) => (
                 <option key={status} value={status}>
@@ -154,6 +216,12 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
                 </option>
               ))}
             </select>
+            {errors.status && (
+              <div className="flex items-center gap-1.5 mt-1.5 text-xs text-red-600">
+                <AlertCircle className="w-3.5 h-3.5" />
+                <span>{errors.status}</span>
+              </div>
+            )}
           </div>
 
           {/* Location */}
@@ -170,7 +238,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
                 placeholder="Lab 3 • Building A"
                 value={formData.location}
                 onChange={handleChange}
-                className={inputWithIconClass}
+                className={getInputClasses('location', true)}
               />
             </div>
           </div>
@@ -188,7 +256,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
                 name="installed_date"
                 value={formData.installed_date}
                 onChange={handleChange}
-                className={inputWithIconClass}
+                className={getInputClasses('installed_date', true)}
               />
             </div>
           </div>
@@ -207,7 +275,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
                 placeholder="SN-2026-001"
                 value={formData.serial_number}
                 onChange={handleChange}
-                className={inputWithIconClass}
+                className={getInputClasses('serial_number', true)}
               />
             </div>
           </div>
@@ -234,7 +302,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
             placeholder="Add maintenance notes or additional information..."
             value={formData.description}
             onChange={handleChange}
-            className={`${inputClass} resize-y min-h-[80px]`}
+            className={`${getInputClasses('description', false)} resize-y min-h-[80px]`}
           />
         </div>
       </div>
