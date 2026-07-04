@@ -22,10 +22,11 @@ const connectDB = async () => {
 
     connection.release();
   } catch (error) {
-    console.error("Database Connection Failed");
-    console.error(error.message);
-    process.exit(1);
-  }
+  console.error("Database Connection Failed");
+  console.error(error);
+
+  process.exit(1);
+}
 };
 
 module.exports = {
