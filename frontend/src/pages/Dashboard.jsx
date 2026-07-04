@@ -1,0 +1,187 @@
+import { useEffect, useState } from "react";
+import { Package } from "lucide-react";
+
+import equipmentApi from "../api/equipmentApi";
+
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
+
+import DashboardCards from "../components/dashboard/DashboardCards";
+import EquipmentTable from "../components/equipment/EquipmentTable";
+import EquipmentForm from "../components/equipment/EquipmentForm";
+import Modal from "../components/common/Modal";
+import ConfirmDialog from "../components/common/ConfirmDialog";
+
+function Dashboard() {
+  // Equipment List
+  const [equipment, setEquipment] = useState([]);
+
+  // Search & Filters
+  const [filters, setFilters] = useState({
+    search: "",
+    type: "",
+    status: "",
+  });
+
+  // Loading State
+  const [loading, setLoading] = useState(false);
+
+  // Modal State
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Selected Equipment (null = Add Mode)
+  const [selectedEquipment, setSelectedEquipment] = useState(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  // Fetch Equipment
+  const fetchEquipment = async () => {
+    try {
+      setLoading(true);
+
+      const response = await equipmentApi.getAllEquipment(filters);
+
+      setEquipment(response.data.data);
+    } catch (error) {
+      console.error("Error fetching equipment:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch whenever filters change
+  useEffect(() => {
+    fetchEquipment();
+  }, [filters]);
+
+  // Handle Search & Filter Changes
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Reset Filters
+  const handleReset = () => {
+    setFilters({
+      search: "",
+      type: "",
+      status: "",
+    });
+  };
+
+  // Add Equipment
+  const handleAddEquipment = () => {
+    setSelectedEquipment(null);
+    setIsModalOpen(true);
+  };
+
+  // Edit Equipment
+  const handleEdit = (equipment) => {
+    setSelectedEquipment(equipment);
+    setIsModalOpen(true);
+  };
+
+  // Delete (Next Step)
+  const handleDelete = (equipment) => {
+    setSelectedEquipment(equipment);
+    setIsDeleteOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await equipmentApi.deleteEquipment(selectedEquipment.id);
+
+      await fetchEquipment();
+
+      setIsDeleteOpen(false);
+
+      setSelectedEquipment(null);
+    } catch (error) {
+      console.error("Delete failed:", error);
+    }
+  };
+
+  // Form Submit
+  const handleSubmit = async (formData) => {
+    try {
+      if (selectedEquipment) {
+        // Update existing equipment
+        await equipmentApi.updateEquipment(selectedEquipment.id, formData);
+      } else {
+        // Create new equipment
+        await equipmentApi.createEquipment(formData);
+      }
+
+      // Refresh the equipment list
+      await fetchEquipment();
+
+      // Close the modal
+      setIsModalOpen(false);
+      setSelectedEquipment(null);
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert("Failed to save equipment. Please try again.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-100">
+      <Header />
+
+      <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Dashboard Statistics */}
+        <DashboardCards />
+
+        {/* Equipment Table with Integrated Search & Filters */}
+        <div className="mt-8">
+          {loading ? (
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
+              <p className="text-slate-500">Loading equipment...</p>
+            </div>
+          ) : (
+            <EquipmentTable
+              equipment={equipment}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              filters={filters}
+              onFilterChange={handleFilterChange}
+              onReset={handleReset}
+              onAddEquipment={handleAddEquipment}
+            />
+          )}
+        </div>
+      </main>
+
+      {/* Add / Edit Modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={selectedEquipment ? "Edit Equipment" : "Add Equipment"}
+        subtitle={selectedEquipment ? "Update laboratory equipment information" : "Add new equipment to the inventory"}
+        icon={<Package className="w-6 h-6 text-slate-600" />}
+        badge={selectedEquipment ? "Editing" : "New"}
+      >
+        <EquipmentForm
+          equipment={selectedEquipment}
+          onSubmit={handleSubmit}
+          onClose={() => setIsModalOpen(false)}
+        />
+      </Modal>
+      <ConfirmDialog
+        isOpen={isDeleteOpen}
+        title="Delete Equipment"
+        message={`Are you sure you want to delete "${selectedEquipment?.name}"?`}
+        onCancel={() => {
+          setIsDeleteOpen(false);
+          setSelectedEquipment(null);
+        }}
+        onConfirm={confirmDelete}
+      />
+      <Footer />
+    </div>
+  );
+}
+
+export default Dashboard;

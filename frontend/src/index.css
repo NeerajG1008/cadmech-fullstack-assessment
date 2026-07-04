@@ -3,6 +3,10 @@
    CADMech Assessment
    =================================== */
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Reset */
 *,
 *::before,
