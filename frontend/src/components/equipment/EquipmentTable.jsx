@@ -1,5 +1,6 @@
+import { useRef, useEffect } from "react";
 import EquipmentRow from "./EquipmentRow";
-import { Package, Search, CircleDot, RotateCcw, Plus, ChevronDown } from "lucide-react";
+import { Package, Search, CircleDot, RotateCcw, Plus, ChevronDown, Loader2 } from "lucide-react";
 import { EQUIPMENT_STATUS, EQUIPMENT_TYPES } from "../../utils/constants";
 
 function EquipmentTable({
@@ -10,7 +11,17 @@ function EquipmentTable({
   onFilterChange,
   onReset,
   onAddEquipment,
+  isLoading = false,
 }) {
+
+  const searchInputRef = useRef(null);
+
+  // Auto-focus search input when component mounts or when equipment updates
+  useEffect(() => {
+    if (filters.search && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [equipment]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -19,7 +30,12 @@ function EquipmentTable({
       <div className="px-6 py-5 border-b border-slate-100">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">Equipment Inventory</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-lg font-semibold text-slate-900">Equipment Inventory</h2>
+              {isLoading && (
+                <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+              )}
+            </div>
             <p className="text-sm text-slate-500 mt-0.5">Search, filter and manage laboratory equipment</p>
           </div>
           <div className="flex items-center gap-2 px-2.5 py-1 bg-slate-50 text-slate-600 rounded-lg text-xs font-medium border border-slate-100">
@@ -34,6 +50,7 @@ function EquipmentTable({
           <div className="relative flex-1 min-w-0">
             <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
             <input
+              ref={searchInputRef}
               type="text"
               name="search"
               value={filters.search}
@@ -124,7 +141,15 @@ function EquipmentTable({
       ) : (
         <>
           {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto">
+          <div className="hidden md:block overflow-x-auto relative">
+            {isLoading && (
+              <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border border-slate-200">
+                  <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+                  <span className="text-sm text-slate-600 font-medium">Loading...</span>
+                </div>
+              </div>
+            )}
             <table className="w-full">
               <thead className="bg-slate-50/50 border-b border-slate-100">
                 <tr>
@@ -149,7 +174,15 @@ function EquipmentTable({
           </div>
 
           {/* Mobile Cards */}
-          <div className="md:hidden divide-y divide-slate-100">
+          <div className="md:hidden divide-y divide-slate-100 relative">
+            {isLoading && (
+              <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center">
+                <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-lg shadow-sm border border-slate-200">
+                  <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+                  <span className="text-sm text-slate-600 font-medium">Loading...</span>
+                </div>
+              </div>
+            )}
             {equipment.map((item) => (
               <EquipmentRow
                 key={item.id}

@@ -25,8 +25,12 @@ function Dashboard() {
     status: "",
   });
 
+  // Debounced filters for API calls
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
+
   // Loading State
   const [loading, setLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -34,25 +38,36 @@ function Dashboard() {
   // Selected Equipment (null = Add Mode)
   const [selectedEquipment, setSelectedEquipment] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedFilters(filters);
+    }, 300); // Reduced to 300ms for faster response
+
+    return () => clearTimeout(timer);
+  }, [filters]);
+
   // Fetch Equipment
   const fetchEquipment = async () => {
     try {
       setLoading(true);
 
-      const response = await equipmentApi.getAllEquipment(filters);
+      const response = await equipmentApi.getAllEquipment(debouncedFilters);
 
       setEquipment(response.data.data);
     } catch (error) {
       console.error("Error fetching equipment:", error);
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   };
 
-  // Fetch whenever filters change
+  // Fetch whenever debounced filters change
   useEffect(() => {
     fetchEquipment();
-  }, [filters]);
+  }, [debouncedFilters]);
 
   // Handle Search & Filter Changes
   const handleFilterChange = (e) => {
@@ -143,7 +158,7 @@ function Dashboard() {
 
         {/* Equipment Table with Integrated Search & Filters */}
         <div className="mt-8">
-          {loading ? (
+          {isInitialLoad ? (
             <EquipmentTableSkeleton />
           ) : (
             <EquipmentTable
@@ -154,6 +169,7 @@ function Dashboard() {
               onFilterChange={handleFilterChange}
               onReset={handleReset}
               onAddEquipment={handleAddEquipment}
+              isLoading={loading}
             />
           )}
         </div>
