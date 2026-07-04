@@ -9,6 +9,7 @@ import Footer from "../components/layout/Footer";
 
 import DashboardCards from "../components/dashboard/DashboardCards";
 import EquipmentTable from "../components/equipment/EquipmentTable";
+import EquipmentTableSkeleton from "../components/equipment/EquipmentTableSkeleton";
 import EquipmentForm from "../components/equipment/EquipmentForm";
 import Modal from "../components/common/Modal";
 import ConfirmDialog from "../components/common/ConfirmDialog";
@@ -143,9 +144,7 @@ function Dashboard() {
         {/* Equipment Table with Integrated Search & Filters */}
         <div className="mt-8">
           {loading ? (
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center">
-              <p className="text-slate-500">Loading equipment...</p>
-            </div>
+            <EquipmentTableSkeleton />
           ) : (
             <EquipmentTable
               equipment={equipment}

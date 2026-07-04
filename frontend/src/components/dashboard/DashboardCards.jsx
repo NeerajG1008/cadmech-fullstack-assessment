@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import equipmentApi from "../../api/equipmentApi";
 import StatCard from "./StatCard";
+import DashboardCardsSkeleton from "./DashboardCardsSkeleton";
 
 import {
   Boxes,
@@ -60,23 +61,7 @@ function DashboardCards() {
   ];
 
   if (loading) {
-    return (
-      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        {[...Array(4)].map((_, index) => (
-          <div
-            key={index}
-            className="
-              h-44
-              animate-pulse
-              rounded-2xl
-              border
-              border-slate-200
-              bg-white
-            "
-          />
-        ))}
-      </div>
-    );
+    return <DashboardCardsSkeleton />;
   }
 
   return (

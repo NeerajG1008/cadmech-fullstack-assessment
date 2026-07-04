@@ -26,7 +26,7 @@ function Modal({ isOpen, onClose, title, children, subtitle, icon, badge }) {
         "
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Fixed Header */}
+        
         <div className="flex-shrink-0 border-b border-slate-100 px-8 py-6 bg-white">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-4 flex-1">
@@ -78,7 +78,7 @@ function Modal({ isOpen, onClose, title, children, subtitle, icon, badge }) {
           </div>
         </div>
 
-        {/* Scrollable Body */}
+       
         <div className="flex-1 overflow-y-auto px-8 pt-6 pb-0 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
           {children}
         </div>

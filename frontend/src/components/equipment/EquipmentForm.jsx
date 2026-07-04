@@ -48,7 +48,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
       ...prev,
       [name]: value,
     }));
-    // Clear error when user starts typing
+    
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -113,7 +113,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       
-      {/* Section 1: Basic Information */}
+      
       <div>
         <div className="flex items-center gap-2 mb-4">
           <h3 className="text-sm font-semibold text-slate-900">Basic Information</h3>
@@ -122,7 +122,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           
-          {/* Equipment Name */}
+          
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
               Equipment Name
@@ -150,7 +150,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
             </div>
           </div>
 
-          {/* Equipment Type */}
+          
           <div>
             <label className="mb-2 block text-sm font-medium text-slate-700">
               Equipment Type
@@ -186,7 +186,7 @@ function EquipmentForm({ equipment, onSubmit, onClose }) {
         </div>
       </div>
 
-      {/* Section 2: Operational Details */}
+      
       <div>
         <div className="flex items-center gap-2 mb-4">
           <h3 className="text-sm font-semibold text-slate-900">Operational Details</h3>
